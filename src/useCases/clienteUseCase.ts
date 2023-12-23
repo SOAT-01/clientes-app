@@ -1,9 +1,9 @@
-import { ClienteMapper } from "adapters/mappers";
-import { ClienteGateway } from "interfaces/gateways";
 import { ResourceNotFoundError } from "utils/errors/resourceNotFoundError";
 import { Cpf, Email } from "valueObjects";
 import { IClienteUseCase } from "./cliente.interface";
 import { ClienteDTO } from "./dto";
+import { ClienteGateway } from "interfaces/gateways/clienteGateway.interface";
+import { ClienteMapper } from "adapters/mappers/clienteMapper";
 
 export class ClienteUseCase implements IClienteUseCase {
     constructor(private readonly clienteGateway: ClienteGateway) {}

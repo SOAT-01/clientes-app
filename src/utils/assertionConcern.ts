@@ -1,4 +1,3 @@
-import { Item } from "entities/pedido";
 import { ValidationError } from "utils/errors/validationError";
 
 export class AssertionConcern {
@@ -89,24 +88,6 @@ export class AssertionConcern {
         }
 
         return true;
-    }
-
-    public static assertArgumentIsBiggerThanZero(
-        arg: number,
-        message: string,
-    ): void {
-        if (arg <= 0) {
-            throw new ValidationError(message);
-        }
-    }
-
-    public static assertArgumentHasQuantityAndPrice(
-        arr: Item[],
-        message: string,
-    ): void {
-        if (arr.some((item) => !item.quantidade || !item.preco)) {
-            throw new Error(message);
-        }
     }
 
     public static assertArgumentIsObjectId(id: string, message: string): void {

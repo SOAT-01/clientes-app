@@ -1,10 +1,10 @@
 import { and, eq, or, sql } from "drizzle-orm";
 import { PostgresDB } from "external/postgres";
 import { Cliente } from "entities/cliente";
-import { ClienteGateway } from "interfaces/gateways";
 
 import { ClienteSchema } from "external/postgres/schemas";
 import { ClienteMapper } from "adapters/mappers/clienteMapper";
+import { ClienteGateway } from "interfaces/gateways/clienteGateway.interface";
 
 export class ClientePostgresGateway implements ClienteGateway {
     constructor(

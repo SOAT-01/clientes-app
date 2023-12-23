@@ -1,5 +1,5 @@
-import { Router } from "express";
 import { clienteController } from "controllers";
+import { Router } from "express";
 
 export function makeClienteRouter(): Router {
     const clienteRouter = Router();

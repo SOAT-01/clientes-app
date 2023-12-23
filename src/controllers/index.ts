@@ -1,2 +1,3 @@
-export * from "./controller";
-export * from "./factory";
+import { ClienteControllerFactory } from "./factory";
+
+export const clienteController = ClienteControllerFactory.create();
