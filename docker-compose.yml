@@ -1,15 +1,6 @@
 version: "3"
 
 services:
-    mongo:
-        container_name: fastFoodMongodb
-        image: mongo:latest
-        ports:
-            - "27017:27017"
-        volumes:
-            - ./data/db:/data/db
-        networks:
-            - fastFoodNetwork
     postgres:
         container_name: fastFoodPostgresdb
         image: postgres:latest
@@ -33,7 +24,6 @@ services:
         working_dir: /fastFood
         environment:
             NODE_ENV: development
-            MONGODB_CONN_STRING: mongodb://mongo:27017
             POSTGRES_DB: fast_food
             POSTGRES_DB_HOST: postgres
             POSTGRES_DB_PORT: 5432
@@ -43,8 +33,6 @@ services:
         depends_on:
             postgres:
                 condition: service_healthy
-            mongo:
-                condition: service_started
         ports:
             - "6001:6001"
         networks:
