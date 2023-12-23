@@ -9,8 +9,12 @@ module.exports = {
         "!**/interfaces/**",
         "!**/external/**",
         "!**/api/{routes,docs}/**",
-        "!**/config/**",
+        "!**/api/middlewares/{index}.ts",
         "!**/api/{index,server}.ts",
+        "!**/config/**",
+        "!**/utils/{requestLogger,statusCode}.ts",
+        "!**/utils/errors/**",
+        "!**/gateways/**",
     ],
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
         prefix: "<rootDir>/src",
