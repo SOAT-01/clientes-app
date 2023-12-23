@@ -5,11 +5,19 @@ module.exports = {
     transform: {
         ".*\\.ts$": "ts-jest",
     },
+    collectCoverageFrom: [
+        "!**/interfaces/**",
+        "!**/external/**",
+        "!**/api/{routes,docs}/**",
+        "!**/config/**",
+        "!**/api/{index,server}.ts",
+    ],
     moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
         prefix: "<rootDir>/src",
     }),
     modulePaths: ["<rootDir>/src", "<rootDir>/tests"],
     testRegex: "tests/.*\\.(test|spec)\\.ts$",
+
     moduleFileExtensions: ["ts", "js", "json", "node"],
     testEnvironment: "node",
 };
