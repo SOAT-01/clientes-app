@@ -1,12 +1,13 @@
 import {
-    pgTable,
+    pgSchema,
     uuid,
     varchar,
     timestamp,
     boolean,
 } from "drizzle-orm/pg-core";
+export const clienteSchema = pgSchema("cliente");
 
-export const ClienteSchema = pgTable("clientes", {
+export const ClienteSchema = clienteSchema.table("clientes", {
     id: uuid("id").defaultRandom().primaryKey().notNull(),
     nome: varchar("nome", { length: 256 }),
     email: varchar("email", { length: 256 }),
