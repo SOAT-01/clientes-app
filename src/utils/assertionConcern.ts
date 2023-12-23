@@ -11,36 +11,6 @@ export class AssertionConcern {
         }
     }
 
-    public static assertArgumentMaxLength(
-        arg: string,
-        max: number,
-        message: string,
-    ): void {
-        if (arg.length > max) {
-            throw new ValidationError(message);
-        }
-    }
-
-    public static assertArgumentMinLength(
-        arg: string,
-        min: number,
-        message: string,
-    ): void {
-        if (arg.length <= min) {
-            throw new ValidationError(message);
-        }
-    }
-
-    public static assertArgumentIsValid(
-        arg: string,
-        acceptedTypes: string[],
-        message: string,
-    ): void {
-        if (!acceptedTypes.includes(arg)) {
-            throw new ValidationError(message);
-        }
-    }
-
     public static assertArgumentIsValidEmail(
         email: string,
         message: string,
@@ -88,18 +58,5 @@ export class AssertionConcern {
         }
 
         return true;
-    }
-
-    public static assertArgumentIsObjectId(id: string, message: string): void {
-        const ObjectIdRegex = /^[a-f\d]{24}$/i;
-        if (!ObjectIdRegex.test(id)) {
-            throw new ValidationError(message);
-        }
-    }
-
-    public static isUUID(value = ""): boolean {
-        const UUIDRegex =
-            /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-        return UUIDRegex.test(value);
     }
 }
