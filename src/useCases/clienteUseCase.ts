@@ -16,7 +16,7 @@ export class ClienteUseCase implements IClienteUseCase {
             email: newCliente.email.value,
         });
 
-        if (alreadyExists) throw new Error("Cliente already exists.");
+        if (alreadyExists) throw new Error("Cliente já existe");
 
         const result = await this.clienteGateway.create(newCliente);
         return ClienteMapper.toDTO(result);
