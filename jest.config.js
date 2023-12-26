@@ -11,6 +11,7 @@ module.exports = {
         "!**/api/{routes,docs}/**",
         "!**/api/middlewares/{index}.ts",
         "!**/api/{index,server}.ts",
+        "!**/controllers/{index,factory}.ts",
         "!**/config/**",
         "!**/utils/{requestLogger,statusCode}.ts",
         "!**/utils/errors/**",
