@@ -4,7 +4,7 @@
     "description": "Projeto do curso da pós tech Fiap Arquitetura de Software - Focado no microserviços de clientes",
     "main": "index.js",
     "scripts": {
-        "test": "jest --verbose false",
+        "test": "jest --verbose false --silent",
         "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/api/index.ts ",
         "build": "tsc --project ./tsconfig.build.json && tsc-alias -p ./tsconfig.build.json",
         "start": "node build/api/index.js",
