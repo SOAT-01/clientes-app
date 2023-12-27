@@ -28,7 +28,7 @@ jobs:
       run: npm run build --if-present
 
     - name: "🔍 run tests"
-      run: npm test
+      run: npm run test:coverage
 
   publish_image:
     runs-on: ubuntu-latest
