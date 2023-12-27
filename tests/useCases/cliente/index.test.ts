@@ -29,25 +29,25 @@ describe("ClienteUseCases", () => {
 
     class ClienteGatewayStub implements ClienteGateway {
         create(cliente: Cliente): Promise<Cliente> {
-            return new Promise((resolve) => resolve(mockCliente));
+            return Promise.resolve(mockCliente);
         }
         getById(id: string): Promise<Cliente> {
-            return new Promise((resolve) => resolve(mockCliente));
+            return Promise.resolve(mockCliente);
         }
         getByCpf(cpf: string): Promise<Cliente> {
-            return new Promise((resolve) => resolve(mockCliente));
+            return Promise.resolve(mockCliente);
         }
         getByEmail(email: string): Promise<Cliente> {
-            return new Promise((resolve) => resolve(mockCliente));
+            return Promise.resolve(mockCliente);
         }
         checkDuplicate(args: {
             email: string;
             cpf?: string;
         }): Promise<boolean> {
             if (args.email === mockEmail2 || args.cpf === mockCpf2) {
-                return new Promise((resolve) => resolve(true));
+                return Promise.resolve(true);
             }
-            return new Promise((resolve) => resolve(false));
+            return Promise.resolve(false);
         }
     }
 
