@@ -8,6 +8,10 @@ export function makeClienteRouter(): Router {
         clienteController.post(req, res, next),
     );
 
+    clienteRouter.get("/:id", async (req, res, next) =>
+        clienteController.getById(req, res, next),
+    );
+
     clienteRouter.get("/by-email/:email", async (req, res, next) =>
         clienteController.getByEmail(req, res, next),
     );

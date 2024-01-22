@@ -76,4 +76,30 @@ export class ClienteController {
             next(error);
         }
     }
+
+    public async getById(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<Response> {
+        try {
+            const id = req.params.id;
+
+            if (!id) {
+                return res
+                    .status(StatusCode.unprocessableEntity)
+                    .json({ message: "Missing identifier id" });
+            }
+
+            const result = await this.clienteUseCase.getById(id);
+
+            if (!result) {
+                return res.status(StatusCode.notFound).end();
+            }
+
+            return res.status(StatusCode.ok).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
