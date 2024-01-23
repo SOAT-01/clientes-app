@@ -310,4 +310,123 @@ describe("ClienteController", () => {
             });
         });
     });
+    describe("Given getById method is called", () => {
+        describe("When all the data is correct and no problems are found", () => {
+            it("should search the cliente and return it", async () => {
+                const mockRequest = {
+                    params: {
+                        id: "001",
+                    },
+                } as any;
+                const mockResponse = {
+                    status: jest.fn().mockReturnThis(),
+                    json: jest.fn(),
+                } as any;
+                const mockNextFunction = jest.fn();
+
+                const expectedResult = {
+                    id: "001",
+                    nome: "John Doe",
+                    email: "john@example.com",
+                };
+
+                clienteUseCaseMock.getById = jest
+                    .fn()
+                    .mockResolvedValue(expectedResult);
+
+                await clienteController.getById(
+                    mockRequest,
+                    mockResponse,
+                    mockNextFunction,
+                );
+
+                expect(mockResponse.status).toHaveBeenCalledWith(StatusCode.ok);
+                expect(mockResponse.json).toHaveBeenCalledWith(expectedResult);
+                expect(mockNextFunction).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("When the id param is not present", () => {
+            it("it should return unprocessableEntity(422) response error", async () => {
+                const mockRequest = {
+                    params: {},
+                } as any;
+                const mockResponse = {
+                    status: jest.fn().mockReturnThis(),
+                    json: jest.fn(),
+                } as any;
+                const mockNextFunction = jest.fn();
+
+                await clienteController.getById(
+                    mockRequest,
+                    mockResponse,
+                    mockNextFunction,
+                );
+
+                expect(mockResponse.status).toHaveBeenCalledWith(
+                    StatusCode.unprocessableEntity,
+                );
+                expect(mockResponse.json).toHaveBeenCalledWith({
+                    message: "Missing identifier id",
+                });
+                expect(mockNextFunction).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("When the useCase return an empty value", () => {
+            it("it should return notFound(404) response error", async () => {
+                const mockRequest = {
+                    params: {
+                        id: "005",
+                    },
+                } as any;
+                const mockResponse = {
+                    status: jest.fn().mockReturnThis(),
+                    json: jest.fn(),
+                    end: jest.fn(),
+                } as any;
+                const mockNextFunction = jest.fn();
+
+                clienteUseCaseMock.getById = jest
+                    .fn()
+                    .mockResolvedValue(undefined);
+
+                await clienteController.getById(
+                    mockRequest,
+                    mockResponse,
+                    mockNextFunction,
+                );
+
+                expect(mockResponse.status).toHaveBeenCalledWith(
+                    StatusCode.notFound,
+                );
+                expect(mockResponse.end).toHaveBeenCalled();
+                expect(mockNextFunction).not.toHaveBeenCalled();
+            });
+        });
+
+        describe("When an error happens", () => {
+            it("should handle errors by calling the next function with the error", async () => {
+                const mockRequest = {
+                    body: {},
+                } as any;
+                const mockResponse = {} as any;
+                const mockNextFunction = jest.fn();
+
+                clienteUseCaseMock.getById = jest
+                    .fn()
+                    .mockRejectedValue(new Error("Server error"));
+
+                await clienteController.getById(
+                    mockRequest,
+                    mockResponse,
+                    mockNextFunction,
+                );
+
+                expect(mockNextFunction).toHaveBeenCalledWith(
+                    expect.any(Error),
+                );
+            });
+        });
+    });
 });
