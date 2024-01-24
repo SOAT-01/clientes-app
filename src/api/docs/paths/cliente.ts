@@ -1,6 +1,59 @@
 import { serverError, notFound, unprocessableEntity } from "../defaults";
 
 export const ClientePaths = {
+    "/cliente/{id}": {
+        get: {
+            tags: ["cliente"],
+            summary: "Rota para encontrar um cliente por id",
+            parameters: [
+                {
+                    in: "path",
+                    name: "id",
+                    description: "id do cliente a ser encontrado",
+                    required: true,
+                    schema: {
+                        type: "string",
+                    },
+                },
+            ],
+            responses: {
+                200: {
+                    description: "Cliente encontrado",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    id: {
+                                        type: "string",
+                                    },
+                                    nome: {
+                                        type: "string",
+                                    },
+                                    email: {
+                                        type: "string",
+                                    },
+                                    cpf: {
+                                        type: "string",
+                                    },
+                                },
+                                required: ["nome", "email"],
+                            },
+                        },
+                    },
+                },
+                404: {
+                    ...notFound,
+                },
+                422: {
+                    ...unprocessableEntity,
+                },
+                500: {
+                    ...serverError,
+                },
+            },
+        },
+    },
     "/cliente/by-email/{email}": {
         get: {
             tags: ["cliente"],

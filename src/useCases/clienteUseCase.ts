@@ -41,4 +41,12 @@ export class ClienteUseCase implements IClienteUseCase {
 
         return ClienteMapper.toDTO(result);
     }
+
+    public async getById(id: string): Promise<ClienteDTO | undefined> {
+        const result = await this.clienteGateway.getById(id);
+
+        if (!result) throw new ResourceNotFoundError("Cliente não encontrado");
+
+        return ClienteMapper.toDTO(result);
+    }
 }

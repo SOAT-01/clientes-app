@@ -9,6 +9,7 @@ describe("ClienteUseCases", () => {
     let gatewayStub: ClienteGateway;
     let sut: ClienteUseCase;
 
+    const mockId = "001";
     const mockEmail = "jdoe1@email.com";
     const mockCpf = "111.111.111-11";
 
@@ -125,6 +126,28 @@ describe("ClienteUseCases", () => {
                     undefined,
                 );
                 await expect(sut.getByEmail(mockEmail)).rejects.toThrow(
+                    new ResourceNotFoundError("Cliente não encontrado"),
+                );
+            });
+        });
+    });
+    describe("Given getById method is called", () => {
+        describe("When all the data is correct and no problems are found", () => {
+            it("should return cliente for a correct id", async () => {
+                const getById = jest.spyOn(gatewayStub, "getById");
+
+                const cliente = await sut.getById(mockId);
+                expect(getById).toHaveBeenCalledWith(mockId);
+                expect(cliente).toEqual(mockDTO);
+            });
+        });
+
+        describe("When the cliente is not found", () => {
+            it("should throw an ResourceNotFoundError", async () => {
+                jest.spyOn(gatewayStub, "getById").mockResolvedValueOnce(
+                    undefined,
+                );
+                await expect(sut.getById(mockId)).rejects.toThrow(
                     new ResourceNotFoundError("Cliente não encontrado"),
                 );
             });
