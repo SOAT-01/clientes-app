@@ -102,4 +102,29 @@ export class ClienteController {
             next(error);
         }
     }
+
+    public async delete(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<Response> {
+        try {
+            console.log("entrei");
+            const id = req.params.id;
+
+            if (!id) {
+                return res
+                    .status(StatusCode.unprocessableEntity)
+                    .json({ message: "Missing identifier id" });
+            }
+
+            await this.clienteUseCase.delete(id);
+
+            return res
+                .status(StatusCode.ok)
+                .json({ message: "User removed with success" });
+        } catch (error) {
+            next(error);
+        }
+    }
 }

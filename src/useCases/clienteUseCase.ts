@@ -49,4 +49,8 @@ export class ClienteUseCase implements IClienteUseCase {
 
         return ClienteMapper.toDTO(result);
     }
+
+    public async delete(id: string): Promise<void> {
+        await this.clienteGateway.delete(id);
+    }
 }
