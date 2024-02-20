@@ -96,6 +96,7 @@ export class ClientePostgresGateway implements ClienteGateway {
             .set({
                 nome: "Usuário removido",
                 email: "usuario-removido@email.com",
+                cpf: "123.456.789-00",
                 deleted: true,
             })
             .where(eq(this.clienteSchema.id, id));

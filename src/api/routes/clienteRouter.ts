@@ -20,5 +20,9 @@ export function makeClienteRouter(): Router {
         clienteController.getByCpf(req, res, next),
     );
 
+    clienteRouter.delete("/:id", async (req, res, next) =>
+        clienteController.delete(req, res, next),
+    );
+
     return clienteRouter;
 }
