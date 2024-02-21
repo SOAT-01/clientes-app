@@ -5,6 +5,12 @@ export const serverConfig = {
     port: parseEnvInt("PORT", 6001),
     isProduction: process.env.NODE_ENV === "production",
     isDevelopment: process.env.NODE_ENV === "development",
+    pedidoService: {
+        url: parseEnvStr(
+            "PEDIDO_SERVICE_URL",
+            "http://localhost:6004/api/pedido",
+        ),
+    },
     postgres: {
         database: parseEnvStr("POSTGRES_DB", "fast_food"),
         host: parseEnvStr("POSTGRES_DB_HOST", "127.0.0.1"),

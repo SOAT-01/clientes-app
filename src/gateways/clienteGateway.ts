@@ -94,9 +94,9 @@ export class ClientePostgresGateway implements ClienteGateway {
         await this.postgresDB
             .update(this.clienteSchema)
             .set({
-                nome: "Usuário removido",
-                email: "usuario-removido@email.com",
-                cpf: "123.456.789-00",
+                nome: "Usuário solicitou remoção dos dados",
+                email: "usuario-solicitou-remocao@email.com",
+                cpf: "123.456.789-10",
                 deleted: true,
             })
             .where(eq(this.clienteSchema.id, id));

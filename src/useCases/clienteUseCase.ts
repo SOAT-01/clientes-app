@@ -4,9 +4,13 @@ import { IClienteUseCase } from "./cliente.interface";
 import { ClienteDTO } from "./dto";
 import { ClienteGateway } from "interfaces/gateways/clienteGateway.interface";
 import { ClienteMapper } from "adapters/mappers/clienteMapper";
+import { PedidoGateway } from "interfaces/gateways/pedidoGateway.interface";
 
 export class ClienteUseCase implements IClienteUseCase {
-    constructor(private readonly clienteGateway: ClienteGateway) {}
+    constructor(
+        private readonly clienteGateway: ClienteGateway,
+        private readonly pedidoGateway: PedidoGateway,
+    ) {}
 
     public async create(data: ClienteDTO): Promise<ClienteDTO> {
         const newCliente = ClienteMapper.toDomain(data);
@@ -52,5 +56,6 @@ export class ClienteUseCase implements IClienteUseCase {
 
     public async delete(id: string): Promise<void> {
         await this.clienteGateway.delete(id);
+        await this.pedidoGateway.deleteClientesFromPedidos(id);
     }
 }
