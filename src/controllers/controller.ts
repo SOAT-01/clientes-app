@@ -109,7 +109,6 @@ export class ClienteController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            console.log("entrei");
             const id = req.params.id;
 
             if (!id) {
