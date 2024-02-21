@@ -1,5 +1,6 @@
 import { Cliente } from "entities/cliente";
 import { ClienteGateway } from "interfaces/gateways/clienteGateway.interface";
+import { PedidoGateway } from "interfaces/gateways/pedidoGateway.interface";
 
 import { ClienteUseCase } from "useCases";
 import { ResourceNotFoundError } from "utils/errors/resourceNotFoundError";
@@ -7,6 +8,7 @@ import { Email, Cpf } from "valueObjects";
 
 describe("ClienteUseCases", () => {
     let gatewayStub: ClienteGateway;
+    let pedidoGatewayStub: PedidoGateway;
     let sut: ClienteUseCase;
 
     const mockId = "001";
@@ -32,6 +34,9 @@ describe("ClienteUseCases", () => {
         create(cliente: Cliente): Promise<Cliente> {
             return Promise.resolve(mockCliente);
         }
+        delete(id: string): Promise<void> {
+            return Promise.resolve();
+        }
         getById(id: string): Promise<Cliente> {
             return Promise.resolve(mockCliente);
         }
@@ -51,10 +56,16 @@ describe("ClienteUseCases", () => {
             return Promise.resolve(false);
         }
     }
+    class PedidoGatewayStub implements PedidoGateway {
+        deleteClientesFromPedidos(id: string): Promise<void> {
+            return Promise.resolve();
+        }
+    }
 
     beforeAll(() => {
         gatewayStub = new ClienteGatewayStub();
-        sut = new ClienteUseCase(gatewayStub);
+        pedidoGatewayStub = new PedidoGatewayStub();
+        sut = new ClienteUseCase(gatewayStub, pedidoGatewayStub);
     });
 
     afterAll(() => {
@@ -150,6 +161,21 @@ describe("ClienteUseCases", () => {
                 await expect(sut.getById(mockId)).rejects.toThrow(
                     new ResourceNotFoundError("Cliente não encontrado"),
                 );
+            });
+        });
+    });
+    describe("Given delete method is called", () => {
+        describe("When the cliente requires for their data to be deleted", () => {
+            it("should update clientes table and notify pedidos to also do it", async () => {
+                const deleteCliente = jest.spyOn(gatewayStub, "delete");
+                const deleteClienteOnPedido = jest.spyOn(
+                    pedidoGatewayStub,
+                    "deleteClientesFromPedidos",
+                );
+
+                await sut.delete(mockId);
+                expect(deleteCliente).toHaveBeenCalledWith(mockId);
+                expect(deleteClienteOnPedido).toHaveBeenCalledWith(mockId);
             });
         });
     });
