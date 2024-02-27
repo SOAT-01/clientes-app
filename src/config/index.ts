@@ -5,10 +5,12 @@ export const serverConfig = {
     port: parseEnvInt("PORT", 6001),
     isProduction: process.env.NODE_ENV === "production",
     isDevelopment: process.env.NODE_ENV === "development",
-    pedidoService: {
-        url: parseEnvStr(
-            "PEDIDO_SERVICE_URL",
-            "http://localhost:6004/api/pedido",
+    sqs: {
+        region: parseEnvStr("SQS_REGION", "us-east-1"),
+        accessKeyId: parseEnvStr("SQS_ACCESS_KEY_ID", "AKIASEKWN5VMCC3LDZNW"),
+        secretAccessKey: parseEnvStr(
+            "SQS_SECRET_ACCESS_KEY",
+            "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",
         ),
     },
     postgres: {
@@ -19,5 +21,11 @@ export const serverConfig = {
         password: parseEnvStr("POSTGRES_DB_PASSWORD", "root"),
         schemaFolder: "./src/external/postgres/schemas/*",
         migrationFolder: "./src/external/postgres/migrations",
+    },
+    queues: {
+        anonimizacaoCliente: parseEnvStr(
+            "QUEUE_ANONIMIZACAO_CLIENTE",
+            "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue",
+        ),
     },
 } as const;
