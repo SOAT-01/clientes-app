@@ -3,8 +3,9 @@ import { ClientePostgresGateway } from "gateways/clienteGateway";
 import { PostgresDB } from "external/postgres";
 import { ClienteSchema } from "external/postgres/schemas";
 import { ClienteUseCase } from "useCases";
-import { PedidoServiceGateway } from "gateways/pedidoGateway";
-import { pedidoServiceApi } from "external/pedidoService/api";
+import { QueueManager } from "external/queueService";
+import { serverConfig } from "config";
+import { SQSClient } from "external/queueService/client";
 
 export class ClienteControllerFactory {
     public static create(): ClienteController {
@@ -12,11 +13,15 @@ export class ClienteControllerFactory {
             PostgresDB,
             ClienteSchema,
         );
-        const pedidoGateway = new PedidoServiceGateway(pedidoServiceApi);
+
+        const clienteDataOnPedidosQueueManager = new QueueManager(
+            serverConfig.queues.anonimizacaoCliente,
+            SQSClient,
+        );
 
         const clienteUseCase = new ClienteUseCase(
             clienteGateway,
-            pedidoGateway,
+            clienteDataOnPedidosQueueManager,
         );
         return new ClienteController(clienteUseCase);
     }
