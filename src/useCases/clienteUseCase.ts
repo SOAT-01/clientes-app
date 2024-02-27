@@ -4,12 +4,13 @@ import { IClienteUseCase } from "./cliente.interface";
 import { ClienteDTO } from "./dto";
 import { ClienteGateway } from "interfaces/gateways/clienteGateway.interface";
 import { ClienteMapper } from "adapters/mappers/clienteMapper";
-import { PedidoGateway } from "interfaces/gateways/pedidoGateway.interface";
+import { QueueManager } from "external/queueService";
+import { BadError } from "utils/errors/badError";
 
 export class ClienteUseCase implements IClienteUseCase {
     constructor(
         private readonly clienteGateway: ClienteGateway,
-        private readonly pedidoGateway: PedidoGateway,
+        private readonly clienteDataOnPedidosQueueManager: QueueManager,
     ) {}
 
     public async create(data: ClienteDTO): Promise<ClienteDTO> {
@@ -55,7 +56,16 @@ export class ClienteUseCase implements IClienteUseCase {
     }
 
     public async delete(id: string): Promise<void> {
-        await this.clienteGateway.delete(id);
-        await this.pedidoGateway.deleteClientesFromPedidos(id);
+        try {
+            await this.clienteGateway.delete(id);
+
+            await this.clienteDataOnPedidosQueueManager.enqueueMessage(
+                JSON.stringify({
+                    clienteId: id,
+                }),
+            );
+        } catch (error) {
+            throw new BadError(error);
+        }
     }
 }
