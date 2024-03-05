@@ -115,7 +115,7 @@ export class ClienteController {
             if (!cpf) {
                 return res
                     .status(StatusCode.unprocessableEntity)
-                    .json({ message: "Missing identifier id" });
+                    .json({ message: "Missing identifier cpf" });
             }
 
             if (!endereco || !numero_telefone || !nome) {
