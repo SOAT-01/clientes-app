@@ -6,11 +6,14 @@ import { ClienteGateway } from "interfaces/gateways/clienteGateway.interface";
 import { ClienteMapper } from "adapters/mappers/clienteMapper";
 import { QueueManager } from "external/queueService";
 import { BadError } from "utils/errors/badError";
+import { SolicitacaoRemocaoDadosGateway } from "interfaces/gateways/solicitacaoRemocaoDadosGateway";
+import { SolicitacaoRemocaoDados } from "entities/solicitacaoRemocaoDados";
 
 export class ClienteUseCase implements IClienteUseCase {
     constructor(
         private readonly clienteGateway: ClienteGateway,
         private readonly clienteDataOnPedidosQueueManager: QueueManager,
+        private readonly solicitacaoRemocaoDadosGateway: SolicitacaoRemocaoDadosGateway,
     ) {}
 
     public async create(data: ClienteDTO): Promise<ClienteDTO> {
@@ -55,13 +58,29 @@ export class ClienteUseCase implements IClienteUseCase {
         return ClienteMapper.toDTO(result);
     }
 
-    public async delete(id: string): Promise<void> {
+    public async delete(clienteData: {
+        cpf: string;
+        endereco: string;
+        nome: string;
+        numero_telefone: string;
+    }): Promise<void> {
         try {
-            await this.clienteGateway.delete(id);
+            const cliente = await this.clienteGateway.getByCpf(clienteData.cpf);
+
+            if (!cliente)
+                throw new ResourceNotFoundError("Cliente não encontrado");
+
+            await this.clienteGateway.delete(cliente.id);
+
+            await this.solicitacaoRemocaoDadosGateway.create({
+                endereco: clienteData.endereco,
+                nome: clienteData.nome,
+                numero_telefone: clienteData.numero_telefone,
+            } as SolicitacaoRemocaoDados);
 
             await this.clienteDataOnPedidosQueueManager.enqueueMessage(
                 JSON.stringify({
-                    clienteId: id,
+                    clienteId: cliente.id,
                 }),
             );
         } catch (error) {
