@@ -193,13 +193,14 @@ describe("ClienteUseCases", () => {
         describe("When the cliente requires for their data to be deleted", () => {
             it("should update clientes table and notify pedidos to also do it", async () => {
                 const deleteCliente = jest.spyOn(gatewayStub, "delete");
-                jest.spyOn(gatewayStub, "getByCpf").mockResolvedValueOnce({
-                    id: mockId,
-                    nome: "John Doe",
-                    email: Email.create(mockDTO.email),
-                    cpf: Cpf.create(mockDTO.cpf),
-                    validateEntity: () => {},
-                });
+                jest.spyOn(gatewayStub, "getByCpf").mockResolvedValueOnce(
+                    new Cliente({
+                        id: mockId,
+                        nome: "John Doe",
+                        email: Email.create(mockEmail),
+                        cpf: Cpf.create(mockCpf),
+                    }),
+                );
                 jest.spyOn(queueMock, "enqueueMessage").mockResolvedValueOnce();
 
                 await sut.delete({
