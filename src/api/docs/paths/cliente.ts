@@ -53,6 +53,41 @@ export const ClientePaths = {
                 },
             },
         },
+        delete: {
+            tags: ["cliente"],
+            summary:
+                "Rota para remover os dados de um cliente quando solicitado",
+            parameters: [
+                {
+                    in: "path",
+                    name: "id",
+                    description: "id do cliente a ser removido",
+                    required: true,
+                    schema: {
+                        type: "string",
+                    },
+                },
+            ],
+            responses: {
+                200: {
+                    description: "Cliente encontrado",
+                    content: {
+                        "application/json": {
+                            message: "User removed with success",
+                        },
+                    },
+                },
+                404: {
+                    ...notFound,
+                },
+                422: {
+                    ...unprocessableEntity,
+                },
+                500: {
+                    ...serverError,
+                },
+            },
+        },
     },
     "/cliente/by-email/{email}": {
         get: {

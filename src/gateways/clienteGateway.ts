@@ -89,4 +89,16 @@ export class ClientePostgresGateway implements ClienteGateway {
 
         return result.count > 0;
     }
+
+    public async delete(id: string): Promise<void> {
+        await this.postgresDB
+            .update(this.clienteSchema)
+            .set({
+                nome: "Usuário solicitou remoção dos dados",
+                email: "usuario-solicitou-remocao@email.com",
+                cpf: "123.456.789-10",
+                deleted: true,
+            })
+            .where(eq(this.clienteSchema.id, id));
+    }
 }

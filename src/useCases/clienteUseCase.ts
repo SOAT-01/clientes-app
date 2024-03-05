@@ -4,9 +4,14 @@ import { IClienteUseCase } from "./cliente.interface";
 import { ClienteDTO } from "./dto";
 import { ClienteGateway } from "interfaces/gateways/clienteGateway.interface";
 import { ClienteMapper } from "adapters/mappers/clienteMapper";
+import { QueueManager } from "external/queueService";
+import { BadError } from "utils/errors/badError";
 
 export class ClienteUseCase implements IClienteUseCase {
-    constructor(private readonly clienteGateway: ClienteGateway) {}
+    constructor(
+        private readonly clienteGateway: ClienteGateway,
+        private readonly clienteDataOnPedidosQueueManager: QueueManager,
+    ) {}
 
     public async create(data: ClienteDTO): Promise<ClienteDTO> {
         const newCliente = ClienteMapper.toDomain(data);
@@ -48,5 +53,19 @@ export class ClienteUseCase implements IClienteUseCase {
         if (!result) throw new ResourceNotFoundError("Cliente não encontrado");
 
         return ClienteMapper.toDTO(result);
+    }
+
+    public async delete(id: string): Promise<void> {
+        try {
+            await this.clienteGateway.delete(id);
+
+            await this.clienteDataOnPedidosQueueManager.enqueueMessage(
+                JSON.stringify({
+                    clienteId: id,
+                }),
+            );
+        } catch (error) {
+            throw new BadError(error);
+        }
     }
 }
