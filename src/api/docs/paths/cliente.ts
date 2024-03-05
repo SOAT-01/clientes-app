@@ -53,15 +53,44 @@ export const ClientePaths = {
                 },
             },
         },
+    },
+    "/cliente/{cpf}": {
         delete: {
             tags: ["cliente"],
             summary:
                 "Rota para remover os dados de um cliente quando solicitado",
+            requestBody: {
+                required: true,
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                nome: {
+                                    type: "string",
+                                },
+                                endereco: {
+                                    type: "string",
+                                },
+                                numero_telefone: {
+                                    type: "string",
+                                },
+                            },
+                            example: {
+                                nome: "John Doe",
+                                endereco: "Rua X, número 2",
+                                numero_telefone: "+5511123456789",
+                            },
+                            required: ["nome", "endereco", "numero_telefone"],
+                        },
+                    },
+                },
+            },
             parameters: [
                 {
                     in: "path",
-                    name: "id",
-                    description: "id do cliente a ser removido",
+                    name: "cpf",
+                    description: "cpf do cliente a ser removido",
                     required: true,
                     schema: {
                         type: "string",
