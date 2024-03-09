@@ -109,15 +109,27 @@ export class ClienteController {
         next: NextFunction,
     ): Promise<Response> {
         try {
-            const id = req.params.id;
+            const cpf = req.params.cpf;
+            const { endereco, numero_telefone, nome } = req.body;
 
-            if (!id) {
+            if (!cpf) {
                 return res
                     .status(StatusCode.unprocessableEntity)
-                    .json({ message: "Missing identifier id" });
+                    .json({ message: "Missing identifier cpf" });
             }
 
-            await this.clienteUseCase.delete(id);
+            if (!endereco || !numero_telefone || !nome) {
+                return res
+                    .status(StatusCode.unprocessableEntity)
+                    .json({ message: "Missing required data" });
+            }
+
+            await this.clienteUseCase.delete({
+                cpf,
+                endereco,
+                nome,
+                numero_telefone,
+            });
 
             return res
                 .status(StatusCode.ok)

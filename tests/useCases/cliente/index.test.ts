@@ -1,8 +1,9 @@
 import { Cliente } from "entities/cliente";
+import { SolicitacaoRemocaoDados } from "entities/solicitacaoRemocaoDados";
 import { QueueManager } from "external/queueService";
 import { SQSClient } from "external/queueService/client";
 import { ClienteGateway } from "interfaces/gateways/clienteGateway.interface";
-import { PedidoGateway } from "interfaces/gateways/pedidoGateway.interface";
+import { SolicitacaoRemocaoDadosGateway } from "interfaces/gateways/solicitacaoRemocaoDadosGateway";
 
 import { ClienteUseCase } from "useCases";
 import { ResourceNotFoundError } from "utils/errors/resourceNotFoundError";
@@ -22,6 +23,7 @@ jest.mock("external/queueService/client", () => {
 
 describe("ClienteUseCases", () => {
     let gatewayStub: ClienteGateway;
+    let solicitacaoRemocaoDadosGatewayStub: SolicitacaoRemocaoDadosGateway;
     let queueMock: QueueManager;
     let sut: ClienteUseCase;
 
@@ -70,16 +72,25 @@ describe("ClienteUseCases", () => {
             return Promise.resolve(false);
         }
     }
-    class PedidoGatewayStub implements PedidoGateway {
-        deleteClientesFromPedidos(id: string): Promise<void> {
+
+    class SolicitacaoRemocaoDadosGatewayStub
+        implements SolicitacaoRemocaoDadosGateway
+    {
+        create(cliente: SolicitacaoRemocaoDados): Promise<void> {
             return Promise.resolve();
         }
     }
 
     beforeAll(() => {
         gatewayStub = new ClienteGatewayStub();
+        solicitacaoRemocaoDadosGatewayStub =
+            new SolicitacaoRemocaoDadosGatewayStub();
         queueMock = new QueueManager("test", SQSClient);
-        sut = new ClienteUseCase(gatewayStub, queueMock);
+        sut = new ClienteUseCase(
+            gatewayStub,
+            queueMock,
+            solicitacaoRemocaoDadosGatewayStub,
+        );
     });
 
     afterAll(() => {
@@ -182,9 +193,22 @@ describe("ClienteUseCases", () => {
         describe("When the cliente requires for their data to be deleted", () => {
             it("should update clientes table and notify pedidos to also do it", async () => {
                 const deleteCliente = jest.spyOn(gatewayStub, "delete");
+                jest.spyOn(gatewayStub, "getByCpf").mockResolvedValueOnce(
+                    new Cliente({
+                        id: mockId,
+                        nome: "John Doe",
+                        email: Email.create(mockEmail),
+                        cpf: Cpf.create(mockCpf),
+                    }),
+                );
                 jest.spyOn(queueMock, "enqueueMessage").mockResolvedValueOnce();
 
-                await sut.delete(mockId);
+                await sut.delete({
+                    cpf: mockDTO.cpf,
+                    endereco: "Rua 2, 0",
+                    nome: "John Doe",
+                    numero_telefone: "123456789",
+                });
                 expect(deleteCliente).toHaveBeenCalledWith(mockId);
                 expect(queueMock.enqueueMessage).toHaveBeenCalledWith(
                     JSON.stringify({
